@@ -168,11 +168,11 @@ void FriAc::timer() {
 }
 
 void FriAc::remoteStart() {
-    init();
-    halfWord(address);
-    byte(data);
-    byte(~data);
-    stop();
+    // init();
+    // halfWord(address);
+    // byte(data);
+    // byte(~data);
+    // stop();
     delay(100);
 }
 

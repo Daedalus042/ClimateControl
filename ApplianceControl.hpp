@@ -48,11 +48,11 @@ public:
     void sendTemperatureCelc(uint temp);
 private:
     uchar_t pin;
-    const ushort_t address = 0xF508;
+    const ushort address = 0xF508;
     void zero();
     void one();
     void byte(uchar_t data);
-    void halfWord(ushort_t data);
+    void halfWord(ushort data);
     void init();
     void stop();
     void command(uchar_t data);
