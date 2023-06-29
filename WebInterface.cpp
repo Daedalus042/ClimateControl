@@ -4,65 +4,79 @@
 
 using namespace std;
 
-EpochClass::EpochClass() {
+EpochClass::EpochClass()
+{
     _ssid = mySsid;
     _password = myPassword;
-    int WifiStatus = WL_IDLE_STATUS;
+    WifiStatus = WL_IDLE_STATUS;
 
     WiFiClient client;
 
-    if (WiFi.status() == WL_NO_MODULE) {
+    if (WiFi.status() == WL_NO_MODULE)
+    {
         blinkCode(noWiFiModuleFound);
     }
-    
-    string fv = <string> WiFi.firmwareVersion();
-    if (fv < WIFI_FIRMWARE_LATEST_VERSION) {
+
+    string fv = (string) WiFi.firmwareVersion();
+    if (fv < WIFI_FIRMWARE_LATEST_VERSION)
+    {
         blinkCode(WifiFirmwareUpgradeNeeded);
     }
 }
 
-EpochClass::EpochClass(string ssid, string password) {
+EpochClass::EpochClass(string ssid, string password)
+{
     _ssid = ssid;
     _password = password;
-    int WifiStatus = WL_IDLE_STATUS;
+    WifiStatus = WL_IDLE_STATUS;
 
     WiFiClient client;
 
-    if (WiFi.status() == WL_NO_MODULE) {
+    if (WiFi.status() == WL_NO_MODULE)
+    {
         blinkCode(noWiFiModuleFound);
     }
-    
-    string fv = <string> WiFi.firmwareVersion();
-    if (fv < WIFI_FIRMWARE_LATEST_VERSION) {
+
+    string fv = (string) WiFi.firmwareVersion();
+    if (fv < WIFI_FIRMWARE_LATEST_VERSION)
+    {
         blinkCode(WifiFirmwareUpgradeNeeded);
     }
 }
 
-EpochClass::~EpochClass() {
+EpochClass::~EpochClass()
+{
     WiFi.end();
 }
 
-void EpochClass::getEpoch() {
+void EpochClass::getEpoch()
+{
     connect();
 
     disconnect();
 }
 
-bool EpochClass::connect() {
-    for (int i = 0; (i < 10) && (WifiStatus != WL_CONNECTED); i++) {
-        WifiStatus = WiFi.begin(_ssid, _password);
+bool EpochClass::connect()
+{
+    for (int i = 0; (i < 10) && (WifiStatus != WL_CONNECTED); i++)
+    {
+        WifiStatus = WiFi.begin(_ssid.c_str(), _password.c_str());
         blinkCode_num(WifiNotConnected, 3);
-        wait(10);
+        sleep(10);
     }
 
-    if (WifiStatus != WL_CONNECTED) {
+    if (WifiStatus != WL_CONNECTED)
+    {
         blinkCode_ms(WifiNotConnected, 180000);
         return false;
-    } else {
+    }
+    else
+    {
         return true;
     }
 }
 
-bool EpochClass::disconnect() {
+bool EpochClass::disconnect()
+{
     WiFi.disconnect();
 }

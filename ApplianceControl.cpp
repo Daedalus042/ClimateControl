@@ -2,35 +2,43 @@
 #include <Arduino.h>
 #include "typeDefs.hpp"
 
-HonFan::HonFan() {
+HonFan::HonFan()
+{
     pin = 1;
 }
 
-HonFan::HonFan(uchar_t pin) {
+HonFan::HonFan(uchar_t pin)
+{
     this->pin = pin;
 }
 
-void HonFan::togglePower() {
+void HonFan::togglePower()
+{
     command(0x4A);
 }
 
-void HonFan::changeSpeed() {
+void HonFan::changeSpeed()
+{
     command(0xC4);
 }
 
-void HonFan::changePattern() {
+void HonFan::changePattern()
+{
     command(0x89);
 }
 
-void HonFan::changeTimer() {
+void HonFan::changeTimer()
+{
     command(0x15);
 }
 
-void HonFan::toggleOscillation() {
+void HonFan::toggleOscillation()
+{
     command(0x38);
 }
 
-void HonFan::zero() {
+void HonFan::zero()
+{
   // Honeywell fan zero
   tone(pin, 37040);
   delayMicroseconds(400);
@@ -38,7 +46,8 @@ void HonFan::zero() {
   delayMicroseconds(1600);
 }
 
-void HonFan::one() {
+void HonFan::one()
+{
   // Honeywell fan one
   tone(pin, 37040);
   delayMicroseconds(400);
@@ -46,10 +55,12 @@ void HonFan::one() {
   delayMicroseconds(2400);
 }
 
-void HonFan::byte(uchar_t data) {
+void HonFan::byte(uchar_t data)
+{
     for (int i = 0; i < 8; i++)
     {
-        if ((data >> i) & 1) {
+        if ((data >> i) & 1)
+{
             one();
         }
         else {
@@ -58,7 +69,8 @@ void HonFan::byte(uchar_t data) {
     }
 }
 
-void HonFan::init() {
+void HonFan::init()
+{
   // Fan alert
   tone(pin, 37040);
   delayMicroseconds(4400);
@@ -66,7 +78,8 @@ void HonFan::init() {
   delayMicroseconds(4400);
 }
 
-void HonFan::command(uchar_t data) {
+void HonFan::command(uchar_t data)
+{
     init();
     byte(address);
     byte(data);
@@ -80,7 +93,8 @@ void HonFan::command(uchar_t data) {
     delay(100);
 }
 
-void HonFan::stop() {
+void HonFan::stop()
+{
   // Honeywell fan end sequence
   noTone(pin);
   delayMicroseconds(14000);
@@ -101,7 +115,8 @@ void HonFan::stop() {
   noTone(pin);
 }
 
-void HonFan::blink() {
+void HonFan::blink()
+{
     digitalWrite(pin, HIGH);
     delay(250);
     digitalWrite(pin, LOW);
@@ -118,56 +133,69 @@ FriAc::FriAc(uchar_t pin){
     this->pin = pin;
 }
 
-void FriAc::togglePower() {
+void FriAc::togglePower()
+{
     command(0x11);
 }
 
-void FriAc::tempTimerUp() {
+void FriAc::tempTimerUp()
+{
     command(0x0E);
 }
 
-void FriAc::tempTimerDown() {
+void FriAc::tempTimerDown()
+{
     command(0x0D);
 }
 
-void FriAc::fanUp() {
+void FriAc::fanUp()
+{
     command(0x01);
 }
 
-void FriAc::fanDown() {
+void FriAc::fanDown()
+{
     command(0x04);
 }
 
-void FriAc::swapFarenCelc() {
+void FriAc::swapFarenCelc()
+{
     command(-1);
     // Need to collect this one
 }
 
-void FriAc::cool() {
+void FriAc::cool()
+{
     command(0x09);
 }
 
-void FriAc::energySaver() {
+void FriAc::energySaver()
+{
     command(0x02);
 }
 
-void FriAc::fanOnly() {
+void FriAc::fanOnly()
+{
     command(0x07);
 }
 
-void FriAc::sleep() {
+void FriAc::sleep()
+{
     command(0x00);
 }
 
-void FriAc::autoFan() {
+void FriAc::autoFan()
+{
     command(0x0F);
 }
 
-void FriAc::timer() {
+void FriAc::timer()
+{
     command(0x06);
 }
 
-void FriAc::remoteStart() {
+void FriAc::remoteStart()
+{
     // init();
     // halfWord(address);
     // byte(data);
@@ -176,20 +204,25 @@ void FriAc::remoteStart() {
     delay(100);
 }
 
-void FriAc::remoteStop() {
+void FriAc::remoteStop()
+{
     command(0x7F);
 }
 
-void FriAc::sendTemperature() {
+void FriAc::sendTemperature()
+{
 }
 
-void FriAc::sendTemperatureFaren(uint temp) {
+void FriAc::sendTemperatureFaren(uint temp)
+{
 }
 
-void FriAc::sendTemperatureCelc(uint temp) {
+void FriAc::sendTemperatureCelc(uint temp)
+{
 }
 
-void FriAc::zero() {
+void FriAc::zero()
+{
   // Frigidair airconditioner zero
   tone(pin, 37040);
   delayMicroseconds(550);
@@ -197,7 +230,8 @@ void FriAc::zero() {
   delayMicroseconds(550);
 }
 
-void FriAc::one() {
+void FriAc::one()
+{
   // Frigidair airconditioner one
   tone(pin, 37040);
   delayMicroseconds(550);
@@ -205,10 +239,12 @@ void FriAc::one() {
   delayMicroseconds(1700);
 }
 
-void FriAc::byte(uchar_t data) {
+void FriAc::byte(uchar_t data)
+{
     for (int i = 0; i < 8; i++)
     {
-        if ((data >> i) & 1) {
+        if ((data >> i) & 1)
+{
             one();
         }
         else {
@@ -217,10 +253,12 @@ void FriAc::byte(uchar_t data) {
     }
 }
 
-void FriAc::halfWord(ushort_t data) {
+void FriAc::halfWord(ushort_t data)
+{
     for (int i = 0; i < 16; i++)
     {
-        if ((data >> i) & 1) {
+        if ((data >> i) & 1)
+{
             one();
         }
         else {
@@ -229,7 +267,8 @@ void FriAc::halfWord(ushort_t data) {
     }
 }
 
-void FriAc::init() {
+void FriAc::init()
+{
   // Frigidair airconditioner alert
   tone(pin, 37040);
   delayMicroseconds(8800);
@@ -237,7 +276,8 @@ void FriAc::init() {
   delayMicroseconds(4400);
 }
 
-void FriAc::command(uchar_t data) {
+void FriAc::command(uchar_t data)
+{
     init();
     halfWord(address);
     byte(data);
@@ -246,7 +286,8 @@ void FriAc::command(uchar_t data) {
     delay(100);
 }
 
-void FriAc::stop() {
+void FriAc::stop()
+{
   // Frigidair airconditioner end sequence
   tone(pin, 37040);
   delayMicroseconds(550);

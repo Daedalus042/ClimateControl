@@ -1,7 +1,8 @@
 
 #include "Common.hpp"
 
-void blinkCode(ushort_t xx) {
+void blinkCode(ushort_t xx)
+{
     while (true)
     {
         // blink slow
@@ -27,7 +28,8 @@ void blinkCode(ushort_t xx) {
     }
 }
 
-void blinkCode_ms(ushort_t xx, uint_t timeout_ms) {
+void blinkCode_ms(ushort_t xx, uint_t timeout_ms)
+{
     uint_t starttime = millis();
     while (millis() < (starttime + timeout_ms))
     {
@@ -54,7 +56,8 @@ void blinkCode_ms(ushort_t xx, uint_t timeout_ms) {
     }
 }
 
-void blinkCode_num(ushort_t xx, uint_t count) {
+void blinkCode_num(ushort_t xx, uint_t count)
+{
     for (int i = 0; i < count; i++)
     {
         // blink slow

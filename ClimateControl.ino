@@ -5,7 +5,8 @@
 
 void blinkCode(ushort_t xx);
 
-void setup() {
+void setup()
+{
   // put your setup code here, to run once:
 
   // Serial.begin(115200);
@@ -13,18 +14,21 @@ void setup() {
 
   // Setup temperature sensor
   Adafruit_SHT4x sht4 = Adafruit_SHT4x();
-  if (! sht4.begin()) {
-    while (true) {
+  if (!sht4.begin())
+  {
+    while (true)
+    {
       digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
       delay(250);                      // wait for a second
       digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-      delay(250);     
+      delay(250);
     }
   }
   sht4.setPrecision(SHT4X_HIGH_PRECISION);
   sht4.setHeater(SHT4X_NO_HEATER);
 
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++)
+  {
     // Serial.println("test");
     delay(1000);
   }
@@ -35,10 +39,8 @@ void setup() {
   fan.togglePower();
   ac.togglePower();
 
-
-  
   sensors_event_t humidity, temp;
-  sht4.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data
+  sht4.getEvent(&humidity, &temp); // populate temp and humidity objects with fresh data
   ac.sendTemperatureCelc(temp.temperature);
   humidity.relative_humidity;
 
@@ -46,11 +48,13 @@ void setup() {
   fan.togglePower();
   delay(1000);
   ac.togglePower();
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < 6; i++)
+  {
     fan.blink();
   }
 }
 
-void loop() {
+void loop()
+{
   blinkCode(reachedEndOfProgram);
 }
