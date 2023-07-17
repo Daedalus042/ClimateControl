@@ -7,8 +7,8 @@ using namespace std;
 #include <WiFiNINA.h>
 #include "typeDefs.hpp"
 #include "private.hpp"
+#include <RTCZero.h>
 #include <string>
-#include <unistd.h>
 
 class EpochClass
 {
@@ -16,13 +16,15 @@ public:
     EpochClass();
     EpochClass(string ssid, string password);
     ~EpochClass();
-    void getEpoch();
+    void fetchEpoch();
+    ulong_t getEpoch();
 private:
     bool connect();
     bool disconnect();
     int WifiStatus;
     string _ssid;
     string _password;
+    RTCZero rtc = RTCZero();
 };
 
 #endif // WebInterface_hpp

@@ -1,5 +1,6 @@
 
 #include "Common.hpp"
+#include "typeDefs.hpp"
 #include "WebInterface.hpp"
 
 using namespace std;
@@ -22,6 +23,8 @@ EpochClass::EpochClass()
     {
         blinkCode(WifiFirmwareUpgradeNeeded);
     }
+
+    rtc.begin();
 }
 
 EpochClass::EpochClass(string ssid, string password)
@@ -42,6 +45,8 @@ EpochClass::EpochClass(string ssid, string password)
     {
         blinkCode(WifiFirmwareUpgradeNeeded);
     }
+
+    rtc.begin();
 }
 
 EpochClass::~EpochClass()
@@ -49,11 +54,46 @@ EpochClass::~EpochClass()
     WiFi.end();
 }
 
-void EpochClass::getEpoch()
+void EpochClass::fetchEpoch()
 {
     connect();
 
+    ulong_t epoch;
+#if Serial_Available
+    Serial.println("fetch");
+#endif
+
+    for (int i = 0; i < 10; i++)
+    {
+        epoch = WiFi.getTime();
+#if Serial_Available
+        Serial.println(epoch);
+#endif
+
+        if (epoch != 0) { break; }
+    }
+
+    if (epoch == 0)
+    {
+        blinkCode_num(ntpUnreachable, 5);
+    }
+    else
+    {
+        rtc.setEpoch(epoch);
+
+#if Serial_Available
+        Serial.print(rtc.getHours());
+        Serial.print(" -- ");
+        Serial.println(rtc.getHours() + CDT);
+#endif
+    }
+
     disconnect();
+}
+
+ulong_t EpochClass::getEpoch()
+{
+    return rtc.getEpoch();
 }
 
 bool EpochClass::connect()
@@ -62,7 +102,7 @@ bool EpochClass::connect()
     {
         WifiStatus = WiFi.begin(_ssid.c_str(), _password.c_str());
         blinkCode_num(WifiNotConnected, 3);
-        sleep(10);
+        delay(10000);
     }
 
     if (WifiStatus != WL_CONNECTED)

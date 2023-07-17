@@ -6,7 +6,7 @@ void blinkCode(ushort_t xx)
     while (true)
     {
         // blink slow
-        for (int i = 0; i < 0x0F & xx; i++)
+        for (int i = 0; i < (0xF0 & xx); i += 0x10)
         {
             digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
             delay(1000);                      // wait for a second
@@ -16,10 +16,11 @@ void blinkCode(ushort_t xx)
 
         delay(1000);
 
-        for (int i = 0; i < 0xF0 & xx; i += 0x10)
+        // blink fast
+        for (int i = 0; i < (0x0F & xx); i++)
         {
             digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-            delay(250);                      // wait for a second
+            delay(250);                       // wait for a quarter second
             digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
             delay(250);     
         }
@@ -34,7 +35,7 @@ void blinkCode_ms(ushort_t xx, uint_t timeout_ms)
     while (millis() < (starttime + timeout_ms))
     {
         // blink slow
-        for (int i = 0; i < 0x0F & xx; i++)
+        for (int i = 0; i < (0xF0 & xx); i += 0x10)
         {
             digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
             delay(1000);                      // wait for a second
@@ -44,10 +45,11 @@ void blinkCode_ms(ushort_t xx, uint_t timeout_ms)
 
         delay(1000);
 
-        for (int i = 0; i < 0xF0 & xx; i += 0x10)
+        // blink fast
+        for (int i = 0; i < (0x0F & xx); i++)
         {
             digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-            delay(250);                      // wait for a second
+            delay(250);                       // wait for a quarter second
             digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
             delay(250);     
         }
@@ -61,7 +63,7 @@ void blinkCode_num(ushort_t xx, uint_t count)
     for (int i = 0; i < count; i++)
     {
         // blink slow
-        for (int i = 0; i < 0x0F & xx; i++)
+        for (int i = 0; i < (0xF0 & xx); i += 0x10)
         {
             digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
             delay(1000);                      // wait for a second
@@ -71,10 +73,11 @@ void blinkCode_num(ushort_t xx, uint_t count)
 
         delay(1000);
 
-        for (int i = 0; i < 0xF0 & xx; i += 0x10)
+        // blink fast
+        for (int i = 0; i < (0x0F & xx); i++)
         {
             digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-            delay(250);                      // wait for a second
+            delay(250);                       // wait for a quarter second
             digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
             delay(250);     
         }

@@ -44,15 +44,15 @@ public:
     void remoteStart();
     void remoteStop();
     void sendTemperature();
-    void sendTemperatureFaren(uint temp);
-    void sendTemperatureCelc(uint temp);
+    void sendTemperatureFaren(uint_t temp);
+    void sendTemperatureCelc(uint_t temp);
 private:
     uchar_t pin;
-    const ushort address = 0xF508;
+    const ushort_t address = 0xF508;
     void zero();
     void one();
     void byte(uchar_t data);
-    void halfWord(ushort data);
+    void halfWord(ushort_t data);
     void init();
     void stop();
     void command(uchar_t data);

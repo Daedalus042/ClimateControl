@@ -60,10 +60,11 @@ void HonFan::byte(uchar_t data)
     for (int i = 0; i < 8; i++)
     {
         if ((data >> i) & 1)
-{
+        {
             one();
         }
-        else {
+        else
+        {
             zero();
         }
     }
@@ -213,11 +214,11 @@ void FriAc::sendTemperature()
 {
 }
 
-void FriAc::sendTemperatureFaren(uint temp)
+void FriAc::sendTemperatureFaren(uint_t temp)
 {
 }
 
-void FriAc::sendTemperatureCelc(uint temp)
+void FriAc::sendTemperatureCelc(uint_t temp)
 {
 }
 
@@ -244,10 +245,11 @@ void FriAc::byte(uchar_t data)
     for (int i = 0; i < 8; i++)
     {
         if ((data >> i) & 1)
-{
+        {
             one();
         }
-        else {
+        else
+        {
             zero();
         }
     }
@@ -258,10 +260,11 @@ void FriAc::halfWord(ushort_t data)
     for (int i = 0; i < 16; i++)
     {
         if ((data >> i) & 1)
-{
+        {
             one();
         }
-        else {
+        else
+        {
             zero();
         }
     }
@@ -310,4 +313,3 @@ void FriAc::stop()
   delayMicroseconds(550);
   noTone(pin);
 }
-
