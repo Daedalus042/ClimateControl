@@ -85,3 +85,12 @@ void blinkCode_num(ushort_t xx, uint_t count)
         delay(1750);
     }
 }
+
+timeType secondsToTime(uint_t time)
+{
+    ushort_t hrs = time / 3600;
+    time -= hrs * 3600;
+    ushort_t mins = time / 60;
+    time -= mins * 60;
+    return timeType{(hrs / 3600), (mins / 60), (ushort_t) time};
+}

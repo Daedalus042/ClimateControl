@@ -18,13 +18,16 @@ public:
     ~EpochClass();
     void fetchEpoch();
     ulong_t getEpoch();
+    void setAlarm(timeType time);
 private:
     bool connect();
     bool disconnect();
     int WifiStatus;
     string _ssid;
     string _password;
-    RTCZero rtc = RTCZero();
+    static RTCZero rtc();
 };
+
+extern EpochClass schedule;
 
 #endif // WebInterface_hpp

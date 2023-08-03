@@ -33,7 +33,6 @@ void setup()
   fan.togglePower();
   ac.togglePower();
 
-  EpochClass schedule;
   schedule.fetchEpoch();
 
   sensors_event_t humidity, temp;

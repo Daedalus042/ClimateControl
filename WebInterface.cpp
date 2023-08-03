@@ -96,6 +96,11 @@ ulong_t EpochClass::getEpoch()
     return rtc.getEpoch();
 }
 
+void EpochClass::setAlarm(timeType time)
+{
+    rtc.setAlarmTime(time.hour, time.minute, time.second);
+}
+
 bool EpochClass::connect()
 {
     for (int i = 0; (i < 10) && (WifiStatus != WL_CONNECTED); i++)
