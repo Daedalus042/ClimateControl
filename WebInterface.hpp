@@ -10,24 +10,23 @@ using namespace std;
 #include <RTCZero.h>
 #include <string>
 
-class EpochClass
+namespace schedule
 {
-public:
-    EpochClass();
-    EpochClass(string ssid, string password);
-    ~EpochClass();
+    // public
+    void init();
+    void init(string ssid, string password);
+    void end();
     void fetchEpoch();
     ulong_t getEpoch();
     void setAlarm(timeType time);
-private:
-    bool connect();
-    bool disconnect();
-    int WifiStatus;
-    string _ssid;
-    string _password;
-    static RTCZero rtc();
-};
 
-extern EpochClass schedule;
+    // Private
+    static bool connect();
+    static bool disconnect();
+    static int WifiStatus;
+    static string _ssid;
+    static string _password;
+    static RTCZero rtc;
+};
 
 #endif // WebInterface_hpp

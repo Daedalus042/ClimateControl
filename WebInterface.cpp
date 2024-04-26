@@ -5,7 +5,9 @@
 
 using namespace std;
 
-EpochClass::EpochClass()
+namespace schedule
+{
+void init()
 {
     _ssid = mySsid;
     _password = myPassword;
@@ -24,10 +26,11 @@ EpochClass::EpochClass()
         blinkCode(WifiFirmwareUpgradeNeeded);
     }
 
+    rtc = RTCZero();
     rtc.begin();
 }
 
-EpochClass::EpochClass(string ssid, string password)
+void init(string ssid, string password)
 {
     _ssid = ssid;
     _password = password;
@@ -46,15 +49,16 @@ EpochClass::EpochClass(string ssid, string password)
         blinkCode(WifiFirmwareUpgradeNeeded);
     }
 
+    rtc = RTCZero();
     rtc.begin();
 }
 
-EpochClass::~EpochClass()
+void end()
 {
     WiFi.end();
 }
 
-void EpochClass::fetchEpoch()
+void fetchEpoch()
 {
     connect();
 
@@ -91,17 +95,17 @@ void EpochClass::fetchEpoch()
     disconnect();
 }
 
-ulong_t EpochClass::getEpoch()
+ulong_t getEpoch()
 {
     return rtc.getEpoch();
 }
 
-void EpochClass::setAlarm(timeType time)
+void setAlarm(timeType time)
 {
     rtc.setAlarmTime(time.hour, time.minute, time.second);
 }
 
-bool EpochClass::connect()
+bool connect()
 {
     for (int i = 0; (i < 10) && (WifiStatus != WL_CONNECTED); i++)
     {
@@ -121,7 +125,8 @@ bool EpochClass::connect()
     }
 }
 
-bool EpochClass::disconnect()
+bool disconnect()
 {
     WiFi.disconnect();
+}
 }

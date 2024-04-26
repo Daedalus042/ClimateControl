@@ -10,8 +10,10 @@ void setup()
 
 #if Serial_Available
   Serial.begin(115200);
+  Serial.println("Code started");
 #endif
   pinMode(LED_BUILTIN, OUTPUT);
+  schedule::init();
 
   // Setup temperature sensor
   Adafruit_SHT4x sht4 = Adafruit_SHT4x();
@@ -33,7 +35,7 @@ void setup()
   fan.togglePower();
   ac.togglePower();
 
-  schedule.fetchEpoch();
+  schedule::fetchEpoch();
 
   sensors_event_t humidity, temp;
   sht4.getEvent(&humidity, &temp); // populate temp and humidity objects with fresh data

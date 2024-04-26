@@ -26,5 +26,5 @@ void Climate::twoPartSchedule(uint_t startTime1, float temp1, uint_t startTime2,
 void Climate::updateClimateTarget()
 {
     timeType nextTrigger = secondsToTime(0);
-    schedule.setAlarm(nextTrigger);
+    schedule::setAlarm(nextTrigger);
 }
