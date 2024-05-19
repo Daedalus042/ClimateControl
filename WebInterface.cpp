@@ -3,9 +3,12 @@
 #include "typeDefs.hpp"
 #include "WebInterface.hpp"
 
+#include <stdio.h>
+#include <time.h>
+
 using namespace std;
 
-namespace schedule
+namespace online
 {
 void init()
 {
@@ -72,6 +75,17 @@ void fetchEpoch()
         epoch = WiFi.getTime();
 #if Serial_Available
         Serial.println(epoch);
+        char lineout[50];
+        time_t rawtime = epoch;
+        struct tm * timeinfo;
+
+        timeinfo = localtime(&rawtime);
+        sprintf(lineout, "Time is %s UTC", asctime(timeinfo));
+        Serial.println(lineout);
+        rawtime = rawtime + 60 * 60 * CDT;
+        timeinfo = localtime(&rawtime);
+        sprintf(lineout, "Time is %s CDT", asctime(timeinfo));
+        Serial.println(lineout);
 #endif
 
         if (epoch != 0) { break; }
@@ -98,6 +112,11 @@ void fetchEpoch()
 ulong_t getEpoch()
 {
     return rtc.getEpoch();
+}
+
+void setAlarm(uint8_t HH, uint8_t MM, uint8_t SS)
+{
+    rtc.setAlarmTime(HH, MM, SS);
 }
 
 void setAlarm(timeType time)

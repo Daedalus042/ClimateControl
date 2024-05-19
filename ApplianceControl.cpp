@@ -128,97 +128,159 @@ void HonFan::blink()
 
 FriAc::FriAc(){
     pin = 1;
+    powerIsOn = false;
 }
 
 FriAc::FriAc(uchar_t pin){
     this->pin = pin;
+    powerIsOn = false;
+}
+
+void FriAc::syncPower(bool powerState)
+{
+    powerIsOn = powerState;
+}
+
+bool FriAc::isPowerOn()
+{
+    return powerIsOn;
+}
+
+void FriAc::powerOn()
+{
+    if (!powerIsOn)
+    {
+        togglePower();
+        powerIsOn = true;
+    }
+}
+
+void FriAc::powerOff()
+{
+    if (powerIsOn)
+    {
+        togglePower();
+        powerIsOn = false;
+    }
 }
 
 void FriAc::togglePower()
 {
-    command(0x11);
+    command(PowerToggle);
+    powerIsOn = !powerIsOn;
 }
 
 void FriAc::tempTimerUp()
 {
-    command(0x0E);
+    command(TempOrTimerUp);
 }
 
 void FriAc::tempTimerDown()
 {
-    command(0x0D);
+    command(TempOrTimerDown);
 }
 
 void FriAc::fanUp()
 {
-    command(0x01);
+    command(FanUp);
 }
 
 void FriAc::fanDown()
 {
-    command(0x04);
+    command(FanDown);
 }
 
 void FriAc::swapFarenCelc()
 {
-    command(-1);
-    // Need to collect this one
+    command(NotDefined);
+    // Need to collect this one (IF exists)
 }
 
 void FriAc::cool()
 {
-    command(0x09);
+    command(Cool);
 }
 
 void FriAc::energySaver()
 {
-    command(0x02);
+    command(EnergySaver);
 }
 
 void FriAc::fanOnly()
 {
-    command(0x07);
+    command(FanOnly);
 }
 
 void FriAc::sleep()
 {
-    command(0x00);
+    command(Sleep);
 }
 
 void FriAc::autoFan()
 {
-    command(0x0F);
+    command(AutoFan);
 }
 
 void FriAc::timer()
 {
-    command(0x06);
+    command(Timer);
 }
 
-void FriAc::remoteStart()
+void FriAc::remoteStart(uint8_t temp)
 {
-    // init();
-    // halfWord(address);
-    // byte(data);
-    // byte(~data);
-    // stop();
-    delay(100);
+    longCommand(RemoteStart, temp);
+}
+
+void FriAc::remoteStartFaren(float temp)
+{
+    // TODO: determine what the CRC/mystery bit is and implement here
+    // bool crc = temp % 1;
+
+    // Note: Temperature is sent MSB first, opposite to how everything else is sent
+    uint8_t adjustedTemp = (temp - 58) * 2;
+    uint8_t formattedTemp = 0;
+    for (uint8_t i = 0; i < 7; i++)
+    {
+        formattedTemp += (adjustedTemp & (1 << i)) << (7 - i);
+    }
+    // formattedTemp |= crc;
+
+    longCommand(RemoteStart, formattedTemp);
+}
+
+void FriAc::remoteStartCels(float temp)
+{
+
 }
 
 void FriAc::remoteStop()
 {
-    command(0x7F);
+    command(RemoteStop);
 }
 
-void FriAc::sendTemperature()
+void FriAc::sendTemperature(uint8_t temp)
 {
+    longCommand(SendTemp, temp);
 }
 
-void FriAc::sendTemperatureFaren(uint_t temp)
+void FriAc::sendTemperatureFaren(float temp)
 {
+    // TODO: determine what the CRC/mystery bit is and implement here
+    // bool crc = temp % 1;
+
+    // Note: Temperature is sent MSB first, opposite to how everything else is sent
+    uint8_t adjustedTemp = (temp - 58) * 2;
+    uint8_t formattedTemp = 0;
+    for (uint8_t i = 0; i < 7; i++)
+    {
+        formattedTemp += (adjustedTemp & (1 << i)) << (7 - i);
+    }
+    // formattedTemp |= crc;
+
+    longCommand(SendTemp, formattedTemp);
 }
 
-void FriAc::sendTemperatureCelc(uint_t temp)
+void FriAc::sendTemperatureCels(float temp)
 {
 }
 
@@ -279,19 +341,37 @@ void FriAc::init()
   delayMicroseconds(4400);
 }
 
-void FriAc::command(uchar_t data)
+void FriAc::command(commands cmd)
 {
+    if ( cmd == NotDefined )
+    {
+        return;
+    }
     init();
     halfWord(address);
-    byte(data);
-    byte(~data);
+    byte(cmd);
+    byte(~cmd);
     stop();
     delay(100);
 }
 
-void FriAc::stop()
+void FriAc::longCommand(longCommands cmd, uint8_t data)
 {
-  // Frigidair airconditioner end sequence
+    init();
+    halfWord(address);
+    byte(cmd);
+    byte(data);
+    endDoubleWord();
+    halfWord(address);
+    byte(cmd);
+    byte(data);
+    stop();
+    delay(100);
+}
+
+void FriAc::endDoubleWord()
+{
+    // Frigidair airconditioner indicate end of first double-word sequence
   tone(pin, 37040);
   delayMicroseconds(550);
   noTone(pin);
@@ -303,6 +383,12 @@ void FriAc::stop()
   tone(pin, 37040);
   delayMicroseconds(550);
   noTone(pin);
+}
+
+void FriAc::stop()
+{
+  // Frigidair airconditioner end sequence
+  endDoubleWord();
 
   delayMicroseconds(96800);
   tone(pin, 37040);
@@ -313,3 +399,6 @@ void FriAc::stop()
   delayMicroseconds(550);
   noTone(pin);
 }
+
+HonFan fan(IR_PIN);
+FriAc ac(IR_PIN);

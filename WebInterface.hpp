@@ -10,7 +10,7 @@ using namespace std;
 #include <RTCZero.h>
 #include <string>
 
-namespace schedule
+namespace online
 {
     // public
     void init();
@@ -18,6 +18,7 @@ namespace schedule
     void end();
     void fetchEpoch();
     ulong_t getEpoch();
+    void setAlarm(uint8_t HH, uint8_t MM, uint8_t SS);
     void setAlarm(timeType time);
 
     // Private

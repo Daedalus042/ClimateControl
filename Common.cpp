@@ -1,5 +1,6 @@
 
 #include "Common.hpp"
+#include <Arduino.h>
 
 void blinkCode(ushort_t xx)
 {

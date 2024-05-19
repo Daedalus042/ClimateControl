@@ -13,7 +13,7 @@ void setup()
   Serial.println("Code started");
 #endif
   pinMode(LED_BUILTIN, OUTPUT);
-  schedule::init();
+  online::init();
 
   // Setup temperature sensor
   Adafruit_SHT4x sht4 = Adafruit_SHT4x();
@@ -29,17 +29,13 @@ void setup()
     delay(1000);
   }
 
-  pinMode(7, OUTPUT);
-  HonFan fan(7);
-  FriAc ac(7);
-  fan.togglePower();
-  ac.togglePower();
+  pinMode(IR_PIN, OUTPUT);
 
-  schedule::fetchEpoch();
+  online::fetchEpoch();
 
   sensors_event_t humidity, temp;
   sht4.getEvent(&humidity, &temp); // populate temp and humidity objects with fresh data
-  ac.sendTemperatureCelc(temp.temperature);
+  ac.sendTemperatureCels(temp.temperature);
   humidity.relative_humidity;
 
   delay(1000);
