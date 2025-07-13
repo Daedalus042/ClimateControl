@@ -3,8 +3,10 @@
 #include "typeDefs.hpp"
 #include "WebInterface.hpp"
 
+#include <WiFiNINA.h>
 #include <stdio.h>
 #include <time.h>
+#include <string>
 
 using namespace std;
 
@@ -16,7 +18,8 @@ void init()
     _password = myPassword;
     WifiStatus = WL_IDLE_STATUS;
 
-    WiFiClient client;
+    client = server.available();
+    server.begin();
 
     if (WiFi.status() == WL_NO_MODULE)
     {
@@ -38,8 +41,6 @@ void init(string ssid, string password)
     _ssid = ssid;
     _password = password;
     WifiStatus = WL_IDLE_STATUS;
-
-    WiFiClient client;
 
     if (WiFi.status() == WL_NO_MODULE)
     {
@@ -66,27 +67,23 @@ void fetchEpoch()
     connect();
 
     ulong_t epoch;
-#if Serial_Available
-    Serial.println("fetch");
-#endif
+    printSerial("Fetch epoch from the network");
 
     for (int i = 0; i < 10; i++)
     {
         epoch = WiFi.getTime();
-#if Serial_Available
-        Serial.println(epoch);
+        printSerial(to_string(epoch));
         char lineout[50];
         time_t rawtime = epoch;
         struct tm * timeinfo;
 
         timeinfo = localtime(&rawtime);
         sprintf(lineout, "Time is %s UTC", asctime(timeinfo));
-        Serial.println(lineout);
+        printSerial(lineout);
         rawtime = rawtime + 60 * 60 * CDT;
         timeinfo = localtime(&rawtime);
         sprintf(lineout, "Time is %s CDT", asctime(timeinfo));
-        Serial.println(lineout);
-#endif
+        printSerial(lineout);
 
         if (epoch != 0) { break; }
     }
@@ -100,9 +97,7 @@ void fetchEpoch()
         rtc.setEpoch(epoch);
 
 #if Serial_Available
-        Serial.print(rtc.getHours());
-        Serial.print(" -- ");
-        Serial.println(rtc.getHours() + CDT);
+        printSerial(to_string(rtc.getHours()).append(" -- ").append(to_string(rtc.getHours() + CDT)));
 #endif
     }
 
@@ -122,6 +117,65 @@ void setAlarm(uint8_t HH, uint8_t MM, uint8_t SS)
 void setAlarm(timeType time)
 {
     rtc.setAlarmTime(time.hour, time.minute, time.second);
+}
+
+void updateWebClient() {
+    client = server.available();
+    if (client)
+        printSerial("new client");           // print a message out the serial port
+    else
+        return;
+
+    String currentLine = "";                // make a String to hold incoming data from the client
+    while (client.connected()) {            // loop while the client's connected
+        if (client.available()) {             // if there's bytes to read from the client,
+                char c = client.read();             // read a byte, then
+                Serial.write(c);                    // print it out the serial monitor
+                if (c == '\n') {                    // if the byte is a newline character
+
+                    // if the current line is blank, you got two newline characters in a row.
+                    // that's the end of the client HTTP request, so send a response:
+                    if (currentLine.length() == 0) {
+
+                        // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
+                        // and a content-type so the client knows what's coming, then a blank line:
+                        client.println("HTTP/1.1 200 OK");
+                        client.println("Content-type:text/html");
+                        client.println();
+
+                        //create the links
+                        client.print("Click <a href=\"/H\">here</a> turn the LED on<br>");
+                        client.print("Click <a href=\"/L\">here</a> turn the LED off<br>");
+
+                        int randomReading = analogRead(A1);
+                        client.print("Random reading from analog pin: ");
+                        client.print(randomReading);
+
+                        // The HTTP response ends with another blank line:
+                        client.println();
+                        // break out of the while loop:
+                        break;
+                    }
+                    else {      // if you got a newline, then clear currentLine:
+                        currentLine = "";
+                    }
+                }
+                else if (c != '\r') {    // if you got anything else but a carriage return character,
+                    currentLine += c;      // add it to the end of the currentLine
+                }
+
+                if (currentLine.endsWith("GET /H")) {
+                    blinkCode_num(reachedEndOfProgram, 2);
+                }
+                if (currentLine.endsWith("GET /L")) {
+                    blinkCode_num(reachedEndOfProgram, 4);
+                }
+
+        }
+    }
+    // close the connection:
+    client.stop();
+    Serial.println("client disconnected");
 }
 
 bool connect()

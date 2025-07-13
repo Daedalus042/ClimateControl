@@ -91,7 +91,7 @@ void updateTargetTempF(float temp, float delta)
         }
 }
 
-void updateMode(modes mode)
+void updateMode(AcModes mode)
 {
     switch (mode)
     {

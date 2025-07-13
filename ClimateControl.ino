@@ -10,9 +10,14 @@ void setup()
 
 #if Serial_Available
   Serial.begin(115200);
+  // Wait for serial to become available
+  delay(1000);
   Serial.println("Code started");
 #endif
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(IR_PIN, OUTPUT);
+  setupRgbLight();
+  rgbLight(0, 8, 0);
   online::init();
 
   // Setup temperature sensor
@@ -29,8 +34,6 @@ void setup()
     delay(1000);
   }
 
-  pinMode(IR_PIN, OUTPUT);
-
   online::fetchEpoch();
 
   sensors_event_t humidity, temp;
@@ -46,9 +49,12 @@ void setup()
   {
     fan.blink();
   }
+
+  rgbLight(4, 4, 16);
 }
 
 void loop()
 {
+  online::updateWebClient();
   blinkCode(reachedEndOfProgram);
 }

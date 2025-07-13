@@ -20,6 +20,7 @@ namespace online
     ulong_t getEpoch();
     void setAlarm(uint8_t HH, uint8_t MM, uint8_t SS);
     void setAlarm(timeType time);
+    void updateWebClient();
 
     // Private
     static bool connect();
@@ -27,6 +28,8 @@ namespace online
     static int WifiStatus;
     static string _ssid;
     static string _password;
+    static WiFiServer server(80);
+    static WiFiClient client;
     static RTCZero rtc;
 };
 

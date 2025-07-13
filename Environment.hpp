@@ -10,7 +10,8 @@ namespace Climate
 // Public members
 
 enum days : uint8_t { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday };  ///< Days of the week to index to
-enum modes { PowerOff, Cool, EnergySaver, FanOnly, UsePreviousMode = -1 };  ///< What mode to run the unit in
+enum SystemModes { Home, Away, Night, Vacation, Off };  ///< System mode to run in
+enum AcModes { PowerOff, Cool, EnergySaver, FanOnly, UsePreviousMode = -1 };  ///< What mode to run the unit in
 enum fanSpeeds { Auto, Low, Medium, High, UsePreviousFan = -1 };  ///< Fan speed to run the unit at
 const float useLastTemperature = nanf(0);
 
@@ -22,7 +23,7 @@ void updateTargetTempC(float temp, float delta);
 
 void updateTargetTempF(float temp, float delta);
 
-void updateMode(modes mode);
+void updateMode(AcModes mode);
 
 void updateFan(fanSpeeds fanSpeed);
 
@@ -30,7 +31,7 @@ struct ScheduleBlockType
 {
     float temp;
     time_t startTime;
-    modes mode;
+    AcModes mode;
     fanSpeeds fanSpeed;
 };
 

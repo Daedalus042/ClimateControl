@@ -3,6 +3,9 @@
 
 #include <Arduino.h>
 #include "typeDefs.hpp"
+#include <string>
+#include <WiFiNINA.h>
+#include <utility/wifi_drv.h>
 
 struct timeType
 {
@@ -11,9 +14,15 @@ struct timeType
     ushort_t second;
 };
 
+void printSerial(std::string msg);
+
 void blinkCode(ushort_t xx);
 void blinkCode_ms(ushort_t xx, uint_t timeout_ms);
 void blinkCode_num(ushort_t xx, uint_t count);
+
+void setupRgbLight();
+void rgbLight(ushort_t red, ushort_t green, ushort_t blue);
+
 timeType secondsToTime(uint_t time);
 
 const ushort_t reachedEndOfProgram = 0x11;
