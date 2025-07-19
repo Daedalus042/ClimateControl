@@ -1,4 +1,3 @@
-
 #include "Common.hpp"
 #include <Arduino.h>
 #include <string>
@@ -71,7 +70,7 @@ void blinkCode_ms(ushort_t xx, uint_t timeout_ms)
 
 void blinkCode_num(ushort_t xx, uint_t count)
 {
-    rgbLight(16, 8, 0);
+    RgbLed.setStatic(16, 8, 0);
     for (int i = 0; i < count; i++)
     {
         // blink slow
@@ -96,21 +95,115 @@ void blinkCode_num(ushort_t xx, uint_t count)
 
         delay(1750);
     }
-        rgbLight(0, 0, 0);
+    RgbLed.setStatic(0, 0, 0);
 }
 
-void setupRgbLight()
+RgbLedClass::RgbLedClass()
+{
+    this.init();
+    setStatic(colorType{0, 0, 0});
+}
+
+RgbLedClass::RgbLedClass(colorType _color) {
+    this.init();
+    setStatic(_color);
+}
+
+RgbLedClass::RgbLedClass(uint8_t red, uint8_t green, uint8_t blue) : RgbLedClass(colorType{red, green, blue}) {}
+// {
+//     RgbLed::RgbLed()
+
+//     WiFiDrv::analogWrite(25, color.red);
+//     WiFiDrv::analogWrite(26, color.green);
+//     WiFiDrv::analogWrite(27, color.blue);
+// }
+
+RgbLedClass::RgbLedClass(uint32_t hexCode)
+{
+    this.init();
+    setStatic(hexCode);
+}
+
+RgbLedClass::~RgbLedClass()
+{
+    // Turn LED off
+    setStatic(0);
+}
+
+void RgbLedClass::setStatic(colorType _color) {
+    color = _color;
+    isPulsing = false;
+    isDimming = false;
+    WiFiDrv::analogWrite(25, color.red);
+    WiFiDrv::analogWrite(26, color.green);
+    WiFiDrv::analogWrite(27, color.blue);
+}
+
+void RgbLedClass::setStatic(uint8_t red, uint8_t green, uint8_t blue) : setStatic(colorType{red, green, blue}) {}
+
+void RgbLedClass::setStatic(uint32_t hexCode)
+{
+    color = colorType{(hexCode >> 0) & 0xFF, (hexCode >> 8) & 0xFF, (hexCode >> 16) & 0xFF}
+    isPulsing = false;
+    isDimming = false;
+    WiFiDrv::analogWrite(25, color.red);
+    WiFiDrv::analogWrite(26, color.green);
+    WiFiDrv::analogWrite(27, color.blue);
+}
+
+void RgbLedClass::setBreathing(uint8_t red, uint8_t green, uint8_t blue)
+{
+    color = _color;
+    isPulsing = true;
+    isDimming = true;
+    WiFiDrv::analogWrite(25, color.red);
+    WiFiDrv::analogWrite(26, color.green);
+    WiFiDrv::analogWrite(27, color.blue);
+}
+
+void RgbLedClass::setBreathing(colorType color) : setBreathing(colorType{red, green, blue}) {}
+
+void RgbLedClass::setBreathing(uint32_t hexCode)
+{
+    color = colorType{(hexCode >> 0) & 0xFF, (hexCode >> 8) & 0xFF, (hexCode >> 16) & 0xFF}
+    isPulsing = true;
+    isDimming = true;
+    WiFiDrv::analogWrite(25, color.red);
+    WiFiDrv::analogWrite(26, color.green);
+    WiFiDrv::analogWrite(27, color.blue);
+}
+
+void RgbLedClass::serviceBreathing()
+{
+    colorType instant{color.red * brightness, color.green * brightness, color.blue * brightness};
+    if (isDimming)
+    {
+        brightness -= 0.0501;
+        if (brightness <= 0)
+        {
+            isDimming = false;
+            brightness = 0;
+        }
+    }
+    else
+    {
+        brightness += 0.0501;
+        if (brightness >= 1)
+        {
+            isDimming = true;
+            brightness = 1;
+        }
+    }
+    WiFiDrv::analogWrite(25, instant.red);
+    WiFiDrv::analogWrite(26, instant.green);
+    WiFiDrv::analogWrite(27, instant.blue);
+}
+
+void RgbLedClass::init()
 {
     WiFiDrv::pinMode(25, OUTPUT);  ///< Red LED
     WiFiDrv::pinMode(26, OUTPUT);  ///< Green LED
     WiFiDrv::pinMode(27, OUTPUT);  ///< Blue LED
-}
-
-void rgbLight(ushort_t red, ushort_t green, ushort_t blue)
-{
-    WiFiDrv::analogWrite(25, red);
-    WiFiDrv::analogWrite(26, green);
-    WiFiDrv::analogWrite(27, blue);
 }
 
 timeType secondsToTime(uint_t time)

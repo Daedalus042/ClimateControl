@@ -16,8 +16,7 @@ void setup()
 #endif
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(IR_PIN, OUTPUT);
-  setupRgbLight();
-  rgbLight(0, 8, 0);
+  RgbLed.setStatic(0, 8, 0);
   online::init();
 
   // Setup temperature sensor
@@ -50,7 +49,7 @@ void setup()
     fan.blink();
   }
 
-  rgbLight(4, 4, 16);
+  RgbLed.setStatic(4, 4, 16);
 }
 
 void loop()

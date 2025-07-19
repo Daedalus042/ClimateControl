@@ -14,26 +14,7 @@ namespace online
 {
 void init()
 {
-    _ssid = mySsid;
-    _password = myPassword;
-    WifiStatus = WL_IDLE_STATUS;
-
-    client = server.available();
-    server.begin();
-
-    if (WiFi.status() == WL_NO_MODULE)
-    {
-        blinkCode(noWiFiModuleFound);
-    }
-
-    string fv = (string) WiFi.firmwareVersion();
-    if (fv < WIFI_FIRMWARE_LATEST_VERSION)
-    {
-        blinkCode(WifiFirmwareUpgradeNeeded);
-    }
-
-    rtc = RTCZero();
-    rtc.begin();
+    init(mySsid, myPassword);
 }
 
 void init(string ssid, string password)
@@ -42,14 +23,18 @@ void init(string ssid, string password)
     _password = password;
     WifiStatus = WL_IDLE_STATUS;
 
+    server.begin();
+
     if (WiFi.status() == WL_NO_MODULE)
     {
+        printSerial(">>> ERR: WiFi module not found")
         blinkCode(noWiFiModuleFound);
     }
 
     string fv = (string) WiFi.firmwareVersion();
     if (fv < WIFI_FIRMWARE_LATEST_VERSION)
     {
+        printSerial(">>> ERR: WiFi module FW upgrade needed")
         blinkCode(WifiFirmwareUpgradeNeeded);
     }
 
@@ -122,7 +107,7 @@ void setAlarm(timeType time)
 void updateWebClient() {
     client = server.available();
     if (client)
-        printSerial("new client");           // print a message out the serial port
+        printSerial("Client available");           // print a message out the serial port
     else
         return;
 
@@ -130,7 +115,7 @@ void updateWebClient() {
     while (client.connected()) {            // loop while the client's connected
         if (client.available()) {             // if there's bytes to read from the client,
                 char c = client.read();             // read a byte, then
-                Serial.write(c);                    // print it out the serial monitor
+                printSerial(to_string(c));                    // print it out the serial monitor
                 if (c == '\n') {                    // if the byte is a newline character
 
                     // if the current line is blank, you got two newline characters in a row.

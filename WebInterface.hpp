@@ -29,7 +29,7 @@ namespace online
     static string _ssid;
     static string _password;
     static WiFiServer server(80);
-    static WiFiClient client;
+    static WiFiClient client = server.available();
     static RTCZero rtc;
 };
 

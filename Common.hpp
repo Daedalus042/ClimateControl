@@ -14,16 +14,44 @@ struct timeType
     ushort_t second;
 };
 
+struct colorType
+{
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+};
+
 void printSerial(std::string msg);
 
 void blinkCode(ushort_t xx);
 void blinkCode_ms(ushort_t xx, uint_t timeout_ms);
 void blinkCode_num(ushort_t xx, uint_t count);
 
-void setupRgbLight();
-void rgbLight(ushort_t red, ushort_t green, ushort_t blue);
+class RgbLedClass {
+public:
+    RgbLedClass();
+    RgbLedClass(colorType _color);
+    RgbLedClass(uint8_t red, uint8_t green, uint8_t blue);
+    RgbLedClass(uint32_t hexCode);
+    ~RgbLedClass();
+    void setStatic(colorType _color);
+    void setStatic(uint8_t red, uint8_t green, uint8_t blue);
+    void setStatic(uint32_t hexCode);
+    void setBreathing(colorType _color);
+    void setBreathing(uint8_t red, uint8_t green, uint8_t blue);
+    void setBreathing(uint32_t hexCode);
+    void serviceBreathing();
+
+private:
+    static colorType color;
+    static bool isPulsing;
+    static bool isDimming;
+    static float brightness;
+    void inline init();
+};
 
 timeType secondsToTime(uint_t time);
+extern RgbLedClass RgbLed();
 
 const ushort_t reachedEndOfProgram = 0x11;
 const ushort_t ntpUnreachable = 0x22;
